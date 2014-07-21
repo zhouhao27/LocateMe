@@ -63,10 +63,24 @@ class ViewController: UIViewController , CLLocationManagerDelegate{
         })
     }
     
+    func locationManager(manager: CLLocationManager!, didFailWithError error: NSError!) {
+        
+        println(error.localizedDescription)
+    }
+    
     @IBAction func locateMe(sender: AnyObject) {
 
         if !self.requesting {
+            
+            if !CLLocationManager.locationServicesEnabled() {
+                println("Location Service is not enabled")
+                return
+            }
+            
             self.locationManager.delegate = self
+            if self.locationManager.respondsToSelector("requestWhenInUseAuthorization") {
+                self.locationManager.requestWhenInUseAuthorization()
+            }
             self.locationManager.distanceFilter = kCLDistanceFilterNone
             self.locationManager.desiredAccuracy = kCLLocationAccuracyBest
             self.locationManager.startUpdatingLocation()
